@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101827">
+<title>Derbi Zamanı ⚽</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+margin:0;
+padding:20px;
+background:#101827;
+color:white;
+font-family:Arial,sans-serif;
+text-align:center;
+}
+
+h1{color:#ffdf00;font-size:30px}
+
+.card{
+max-width:420px;
+margin:20px auto;
+padding:20px;
+background:#1e293b;
+border-radius:22px;
+}
+
+.teams{
+display:flex;
+justify-content:space-around;
+align-items:center;
+gap:10px;
+}
+
+.team{
+padding:15px;
+border-radius:15px;
+font-weight:bold;
+flex:1;
+}
+
+.gs{background:#a90035}
+.fb{background:#003399}
+
+.score{
+font-size:38px;
+margin:15px;
+color:#ffdf00;
+}
+
+.field{
+height:240px;
+background:#268443;
+border:4px solid white;
+border-radius:12px;
+position:relative;
+overflow:hidden;
+margin:20px 0;
+}
+
+.goal{
+position:absolute;
+top:5px;
+left:25%;
+width:50%;
+height:65px;
+border:5px solid white;
+border-bottom:0;
+background:repeating-linear-gradient(
+90deg,transparent 0px,transparent 15px,
+#ffffff55 16px,#ffffff55 17px
+);
+}
+
+.ball{
+position:absolute;
+bottom:25px;
+left:calc(50% - 15px);
+font-size:35px;
+transition:all .7s ease;
+}
+
+.ball.kick{
+bottom:165px;
+}
+
+button{
+background:#ffdf00;
+color:#003399;
+border:0;
+padding:17px 30px;
+border-radius:15px;
+font-size:19px;
+font-weight:bold;
+margin:10px;
+cursor:pointer;
+}
+
+button:disabled{opacity:.4}
+
+#message{
+font-size:21px;
+font-weight:bold;
+min-height:55px;
+}
+
+.stats{
+font-size:17px;
+line-height:1.8;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>⚽ DERBİ ZAMANI ⚽</h1>
+<p>Ezeli rekabet, ebedi dostluk!</p>
+
+<div class="card">
+
+<div class="teams">
+<div class="team gs">
+GALATASARAY
+<div class="score" id="gsScore">0</div>
+</div>
+
+<div class="team fb">
+FENERBAHÇE
+<div class="score" id="fbScore">0</div>
+</div>
+</div>
+
+<div class="field">
+<div class="goal">🥅</div>
+<div class="ball" id="ball">⚽</div>
+</div>
+
+<div id="message">Derbi başlıyor! Hazır mısın?</div>
+
+<p class="stats">
+Şut: <span id="shots">0</span> / 10
+<br>
+Sıradaki takım: <span id="next">Galatasaray</span>
+</p>
+
+<button id="kick" onclick="shoot()">ŞUT ÇEK ⚽</button>
+
+<div id="result"></div>
+
+<button onclick="restart()">YENİDEN OYNA ↻</button>
+
+</div>
+
+<script>
+
+let shots=0;
+let gs=0;
+let fb=0;
+let busy=false;
+
+function shoot(){
+
+if(shots>=10 || busy)return;
+
+busy=true;
+
+let team=shots%2===0?"gs":"fb";
+
+let ball=document.getElementById("ball");
+let message=document.getElementById("message");
+
+shots++;
+
+document.getElementById("shots").textContent=shots;
+
+ball.classList.add("kick");
+
+setTimeout(()=>{
+
+if(team==="fb"){
+fb++;
+document.getElementById("fbScore").textContent=fb;
+message.textContent="GOOOOOOL! 💛💙 FENERBAHÇE!";
+}else{
+message.textContent="KAÇTI! 😂 Galatasaray gol atamadı!";
+}
+
+ball.classList.remove("kick");
+
+setTimeout(()=>{
+
+busy=false;
+
+if(shots===10){
+finish();
+}else{
+document.getElementById("next").textContent=
+shots%2===0?"Galatasaray":"Fenerbahçe";
+}
+
+},500);
+
+},700);
+
+}
+
+function finish(){
+
+document.getElementById("kick").disabled=true;
+
+document.getElementById("message").textContent=
+"🏆 DERBİNİN KAZANANI FENERBAHÇE! 💛💙";
+
+document.getElementById("result").innerHTML=
+"<h2>FENERBAHÇE ŞAMPİYON! 🏆</h2>"+
+"<h3>Skor: "+gs+" - "+fb+"</h3>"+
+"<p>💛💙 Sarı lacivert zafer!</p>";
+
+}
+
+function restart(){
+
+shots=0;
+gs=0;
+fb=0;
+busy=false;
+
+document.getElementById("gsScore").textContent=0;
+document.getElementById("fbScore").textContent=0;
+document.getElementById("shots").textContent=0;
+document.getElementById("next").textContent="Galatasaray";
+document.getElementById("message").textContent="Derbi başlıyor! Hazır mısın?";
+document.getElementById("result").innerHTML="";
+document.getElementById("kick").disabled=false;
+document.getElementById("ball").classList.remove("kick");
+
+}
+
+</script>
+
+</body>
+</html>
